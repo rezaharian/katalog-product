@@ -1,103 +1,152 @@
-import Image from "next/image";
+'use client'
+
+import { useEffect, useState } from 'react'
+import Navbar from '../components/Navbar'
+import Hero from '../components/Hero'
+import Footer from '../components/Footer'
+import { useCart } from '../context/CartContext'
+import CategoryBar from '../components/Category'
+import FlashSale from '../components/FlashSale'
+import DetailProduct from '../components/DetailProduct'
+
+function getMultipleOfFour(arr) {
+  return arr.slice(0, arr.length - (arr.length % 4))
+}
 
 export default function Home() {
-  return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.js
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const [products, setProducts] = useState([])
+  const { addToCart } = useCart()
+  const [showPopup, setShowPopup] = useState(false)
+  const [popupProduct, setPopupProduct] = useState(null)
+  const [selectedCategory, setSelectedCategory] = useState(null)
+  const [selectedProduct, setSelectedProduct] = useState(null)
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
+  useEffect(() => {
+    fetch('https://fakestoreapi.com/products')
+      .then(res => res.json())
+      .then(data => setProducts(data))
+  }, [])
+
+  const waNumber = '+6285880333326'
+  const handleWaLink = (p) => {
+    const text = `Halo, saya ingin memesan produk berikut:%0A%0A` +
+      `*${p.title}*%0A` +
+      `Harga: Rp ${(p.price * 16000).toLocaleString('id-ID')}%0A` +
+      `Deskripsi: ${p.description}`
+    return `https://wa.me/${waNumber}?text=${text}`
+  }
+
+  const filteredProducts = selectedCategory
+    ? products.filter(p => p.category === selectedCategory)
+    : products
+
+  const ProductCard = ({ p, badge }) => (
+    <div
+      onClick={() => setSelectedProduct(p)}
+      className="relative bg-white shadow-lg rounded-xl overflow-hidden p-3 flex flex-col border border-gray-100 transition-all duration-200 hover:shadow-2xl hover:-translate-y-1 group min-h-[320px] cursor-pointer"
+    >
+      <span className={`absolute top-3 right-3 px-2 py-0.5 rounded-full text-xs font-semibold tracking-wide shadow
+        ${badge === 'Flash Sale' ? 'bg-gradient-to-r from-red-500 to-pink-500 text-white' :
+          'bg-gradient-to-r from-blue-200 to-blue-400 text-blue-800'}`}>
+        {badge}
+      </span>
+      <div className="flex-1 flex items-center justify-center mb-2">
+        <img
+          src={p.image}
+          alt={p.title}
+          className="w-24 h-24 object-contain transition-transform duration-200 group-hover:scale-105"
+        />
+      </div>
+      <h2 className="font-bold text-sm text-gray-800 mb-1 line-clamp-2">{p.title}</h2>
+      <div className="flex items-center gap-2 mb-1">
+        <span className="text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded">{p.category}</span>
+        <span className="flex items-center text-yellow-500 text-xs font-semibold">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <svg key={i} className={`inline h-3 w-3 ${i < Math.round(p.rating.rate) ? '' : 'text-gray-300'}`} fill="currentColor" viewBox="0 0 20 20">
+              <polygon points="9.9,1.1 12.3,6.6 18.2,7.3 13.7,11.4 15,17.2 9.9,14.1 4.8,17.2 6.1,11.4 1.6,7.3 7.5,6.6 " />
+            </svg>
+          ))}
+          <span className="ml-1 text-gray-600">{p.rating.rate}</span>
+          <span className="ml-1 text-gray-400">({p.rating.count})</span>
+        </span>
+      </div>
+      <p className="text-gray-500 text-xs mb-2 line-clamp-2">{p.description}</p>
+      <div className="flex items-center justify-between mt-auto gap-2">
+        <span className="text-pink-600 font-bold text-base">
+          Rp {(p.price * 16000).toLocaleString('id-ID')}
+        </span>
         <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
+          href={handleWaLink(p)}
           target="_blank"
           rel="noopener noreferrer"
+          className="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded-md font-semibold shadow-sm transition-colors duration-200 flex items-center gap-1 text-xs"
+          title="Pesan via WhatsApp"
         >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16.72 11.06a6.5 6.5 0 11-3.72-3.72l2.06 2.06m0 0l2.06-2.06m-2.06 2.06V7.5" />
+          </svg>
+          Pesan
         </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
+        <button
+          className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-md font-semibold shadow-sm transition-colors duration-200 flex items-center gap-1 text-xs"
+          title="Masukkan Keranjang"
+          onClick={(e) => {
+            e.stopPropagation()
+            addToCart(p)
+            setPopupProduct(p)
+            setShowPopup(true)
+            setTimeout(() => setShowPopup(false), 1500)
+          }}
         >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13l-1.35 2.7A1 1 0 007.52 17h8.96a1 1 0 00.87-1.3L17 13M7 13V6h10v7" />
+          </svg>
+          + Cart
+        </button>
+      </div>
     </div>
-  );
+  )
+
+  return (
+    <>
+      <Navbar />
+
+      {showPopup && popupProduct && (
+        <div className="fixed top-6 left-1/2 -translate-x-1/2 z-50 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg flex items-center gap-2 animate-bounce">
+          <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+          </svg>
+          <span>
+            <b>{popupProduct.title}</b> telah dimasukkan ke keranjang!
+          </span>
+        </div>
+      )}
+
+      <div className="pt-20 px-8 bg-gradient-to-br from-blue-100 via-white to-pink-100">
+        {selectedProduct ? (
+          <DetailProduct product={selectedProduct} onBack={() => setSelectedProduct(null)} />
+        ) : (
+          <>
+            <Hero />
+            <FlashSale />
+            <CategoryBar selected={selectedCategory} onSelect={setSelectedCategory} />
+            <main className="min-h-screen -mt-10 pt-4">
+              <section>
+                <h2 className="text-2xl mt-6 font-bold mb-4 text-blue-600">
+                  {selectedCategory ? `Kategori: ${selectedCategory}` : 'Semua Produk'}
+                </h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+                  {getMultipleOfFour(filteredProducts).map((p) => (
+                    <ProductCard key={p.id} p={p} badge={selectedCategory ? selectedCategory : "Produk"} />
+                  ))}
+                </div>
+              </section>
+            </main>
+          </>
+        )}
+      </div>
+
+      <Footer />
+    </>
+  )
 }
