@@ -28,8 +28,12 @@ const availableIcons = [
   BadgePercent,
 ];
 
-// Buat grid 5x6 posisi ikon
-function generateGridIcons(rows = 7, cols = 6) {
+function generateGridIcons(rows = 6, cols = 5) {
+  if (typeof window !== "undefined" && window.innerWidth < 768) {
+    rows = 4;
+    cols = 4;
+  }
+
   const icons = [];
   const rowGap = 100 / (rows + 1);
   const colGap = 100 / (cols + 1);
@@ -39,17 +43,17 @@ function generateGridIcons(rows = 7, cols = 6) {
       const Component =
         availableIcons[Math.floor(Math.random() * availableIcons.length)];
 
-      const top = row * rowGap + Math.random() * 2 - 1; // variasi kecil -1% s/d +1%
+      const top = row * rowGap + Math.random() * 2 - 1;
       const left = col * colGap + Math.random() * 2 - 1;
 
-      const radius = Math.random() * 10 + 5; // 5–15px
+      const radius = Math.random() * 10 + 5;
       const angle = Math.random() * 360;
-      const duration = Math.random() * 5 + 4; // 4–9 detik
+      const duration = Math.random() * 5 + 4;
 
       const animate = {
         x: [0, radius * Math.cos(angle), 0, -radius * Math.cos(angle), 0],
         y: [0, -radius * Math.sin(angle), 0, radius * Math.sin(angle), 0],
-        rotate: [0, 10, -10, 0], // rotasi kecil
+        rotate: [0, 10, -10, 0],
       };
 
       icons.push({
@@ -69,7 +73,6 @@ function generateGridIcons(rows = 7, cols = 6) {
   return icons;
 }
 
-
 export default function Hero() {
   const [icons, setIcons] = useState([]);
 
@@ -78,33 +81,35 @@ export default function Hero() {
   }, []);
 
   return (
-    <div className="w-full h-96 flex flex-col md:flex-row relative rounded-xl shadow-lg overflow-hidden mb-10 bg-gradient-to-r from-blue-400 via-pink-200 to-pink-400">
+    <div className="w-full relative rounded-xl shadow-lg overflow-hidden mb-10 bg-gradient-to-r mt-4 from-blue-400 via-pink-200 to-pink-400 aspect-[16/5] sm:aspect-[16/5] md:aspect-[16/6]">
       <img
         src="https://prismic-proxy.imgix.net/juvia-b2c-shop/Z-5_eHdAxsiBwRgo_XXL-themenshop-250410-sale-damen-modul-02b-de-en.jpg?auto=format,compress&rect=0,0,5760,1440&w=2600&h=650"
         alt="Banner Katalog Produk"
-        className="absolute inset-0 w-full h-full object-cover opacity-70"
+        className="absolute inset-0 w-full h-full object-cover object-center opacity-70"
       />
 
-      {/* Kolom Kiri */}
-      <div className="relative z-10 w-full md:w-1/2 flex items-center justify-center px-6">
-        <button className="bg-white text-blue-700 font-semibold px-6 py-3 rounded-full shadow-lg hover:bg-blue-50 transition-colors">
-          Ambil Promo
-        </button>
-      </div>
+      <div className="relative z-10 flex flex-col md:flex-row items-center justify-between h-full px-6 py-10">
+        {/* Tombol kiri */}
+        <div className="w-full md:w-1/2 flex justify-center mb-6 md:mb-0">
+          <button className="bg-white text-blue-700 font-semibold px-6 py-3 text-base md:text-lg rounded-full shadow-lg hover:bg-blue-50 transition-colors">
+            Ambil Promo
+          </button>
+        </div>
 
-      {/* Kolom Kanan */}
-      <div className="relative z-10 w-full md:w-1/2 h-full overflow-hidden">
-        {icons.map(({ Component, top, left, animate, transition }, index) => (
-          <motion.div
-            key={index}
-            className="absolute text-white opacity-20"
-            style={{ top: `${top}%`, left: `${left}%` }}
-            animate={animate}
-            transition={transition}
-          >
-            <Component size={22} />
-          </motion.div>
-        ))}
+        {/* Ikon animasi kanan */}
+        <div className="relative w-full md:w-1/2 h-full overflow-hidden">
+          {icons.map(({ Component, top, left, animate, transition }, index) => (
+            <motion.div
+              key={index}
+              className="absolute text-white opacity-20"
+              style={{ top: `${top}%`, left: `${left}%` }}
+              animate={animate}
+              transition={transition}
+            >
+              <Component size={20} className="sm:size-[22px] md:size-[24px]" />
+            </motion.div>
+          ))}
+        </div>
       </div>
     </div>
   );

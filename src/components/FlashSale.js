@@ -5,7 +5,7 @@ import { Swiper, SwiperSlide } from "swiper/react"
 import "swiper/css"
 import "swiper/css/navigation"
 import { Navigation } from "swiper/modules"
-import { ChevronLeft, ChevronRight, ShoppingCart, Star } from "lucide-react"
+import { ChevronRight, ShoppingCart, Star } from "lucide-react"
 import { useCart } from "@/context/CartContext"
 
 export default function FlashSale() {
@@ -28,107 +28,99 @@ export default function FlashSale() {
   }, [])
 
   return (
-    <div className="w-full py-8 relative">
-      {/* Notifikasi popup */}
+    <div className="w-full py-6 relative">
       {notification && (
         <div className="fixed top-5 left-1/2 transform -translate-x-1/2 bg-green-100 text-green-800 px-4 py-2 rounded shadow z-50 text-sm transition-opacity duration-500">
           {notification}
         </div>
       )}
 
-      <div className="flex items-center justify-between  mb-4 px-4">
-        <h2 className="text-lg sm:text-xl font-semibold text-red-600 tracking-wide">🔥 Flash Sale</h2>
-        <span className="bg-red-50 text-red-500 px-3 py-1 rounded-full text-xs font-medium">Terbatas!</span>
+      <div className="flex items-center justify-between mb-3 px-4">
+        <h2 className="text-base sm:text-lg font-semibold text-red-600 tracking-wide">🔥 Flash Sale</h2>
+        <span className="inline-flex items-center gap-1 bg-red-50 text-red-500 px-3 py-1 rounded-full text-[10px] font-medium">
+          Terbatas <ChevronRight size={12} /> <ChevronRight size={12} />
+        </span>
       </div>
-
-
 
       <Swiper
         modules={[Navigation]}
-        spaceBetween={16}
+        spaceBetween={2}
         slidesPerView={6}
         navigation={{
           nextEl: ".swiper-button-next",
           prevEl: ".swiper-button-prev",
         }}
         breakpoints={{
-          320: { slidesPerView: 2 },
+          320: { slidesPerView: 2.2 },
           480: { slidesPerView: 3 },
           768: { slidesPerView: 4 },
           1024: { slidesPerView: 6 },
         }}
-        className="!pb-6"
+        className="!pb-4"
       >
         {products.map(product => {
           const percentageSold = Math.round((product.sold / product.stock) * 100)
 
           return (
             <SwiperSlide key={product.id}>
-              <div className="rounded-xl   border-0 shadow-orange-400 hover:shadow-sm transition-all duration-200 flex flex-col items-center relative group w-full h-[320px] max-w-[180px] mx-auto overflow-hidden bg-white">
+              <div className="rounded-xl shadow-orange-400 hover:shadow-sm transition-all duration-200 flex flex-col items-center relative group w-full h-[220px] sm:h-[240px] md:h-[260px] max-w-[130px] sm:max-w-[150px] md:max-w-[160px] overflow-hidden bg-white">
                 
-                {/* Label Diskon */}
-                <span className="absolute top-2 left-2 bg-red-500 text-white text-[9px] px-2 py-0.5 rounded-full font-semibold shadow">
+                <span className="absolute top-1 left-1 bg-red-500 text-white text-[8px] px-1.5 py-0.5 rounded-full font-semibold shadow">
                   {Math.round(product.discountPercentage)}% OFF
                 </span>
 
-                {/* Gambar Produk */}
-                <div className="w-full bg-white flex justify-center items-center p-3 h-[150px]">
+                <div className="w-full flex justify-center items-center p-2 h-[100px]">
                   <img
                     src={product.thumbnail ?? product.images?.[0] ?? "https://via.placeholder.com/150"}
                     alt={product.title}
-                    className="w-32 h-32 object-contain rounded transition group-hover:scale-105"
+                    className="w-24 h-24 object-contain rounded transition group-hover:scale-105"
                   />
                 </div>
 
-                {/* Nama Produk */}
-                <div className="font-semibold text-[11px] text-center text-gray-800 line-clamp-2 px-2 mt-1">
+                <div className="font-semibold text-[10px] text-center text-gray-800 line-clamp-2 px-1 mt-1">
                   {product.title}
                 </div>
 
-                {/* Rating */}
-                <div className="flex items-center gap-1 text-yellow-500 text-[10px] mt-1 mb-0.5">
+                <div className="flex items-center gap-0.5 text-yellow-500 text-[9px] mt-1 mb-0.5">
                   {Array.from({ length: 5 }, (_, i) => (
                     <Star
                       key={i}
                       className={`w-3 h-3 ${i < Math.round(product.rating) ? "fill-yellow-400" : "stroke-yellow-300"}`}
                     />
                   ))}
-                  <span className="text-[9px] text-gray-500">({Math.round(product.rating * 20)} ulasan)</span>
+                  <span className="text-[8px] text-gray-500">({Math.round(product.rating * 20)} ulasan)</span>
                 </div>
 
-                {/* Harga */}
                 <div className="flex items-center gap-1 mb-1 mt-0.5">
-                  <span className="text-red-600 font-semibold text-[11px]">
+                  <span className="text-red-600 font-semibold text-[10px]">
                     Rp {(product.price * 16000).toLocaleString("id-ID")}
                   </span>
-                  <span className="text-[9px] text-gray-400 line-through">
+                  <span className="text-[8px] text-gray-400 line-through">
                     Rp {((product.price * 16000) / (1 - product.discountPercentage / 100)).toLocaleString("id-ID")}
                   </span>
                 </div>
 
-                {/* Progress Penjualan */}
-                <div className="w-full px-3 mt-1">
-                  <div className="w-full bg-gray-200 h-2 rounded-full">
+                <div className="w-full px-2 mt-0.5">
+                  <div className="w-full bg-gray-200 h-1.5 rounded-full">
                     <div
-                      className="h-2 bg-gradient-to-r from-red-500 to-orange-400 rounded-full"
+                      className="h-1.5 bg-gradient-to-r from-red-500 to-orange-400 rounded-full"
                       style={{ width: `${percentageSold}%` }}
                     />
                   </div>
-                  <div className="text-[9px] text-gray-600 mt-0.5 text-center">
+                  <div className="text-[8px] text-gray-600 mt-0.5 text-center">
                     {product.sold} terjual dari {product.stock}
                   </div>
                 </div>
 
-                {/* Tombol + Keranjang */}
                 <button
                   onClick={() => {
                     addToCart(product)
                     setNotification(`✅ Produk "${product.title}" telah dimasukkan ke keranjang`)
                     setTimeout(() => setNotification(null), 3000)
                   }}
-                  className="mt-auto mb-2 bg-blue-500 hover:bg-blue-600 text-white px-4 py-1 rounded-full text-[10px] flex items-center gap-1 shadow-sm transition"
+                  className="mt-auto mb-1 bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-full text-[9px] flex items-center gap-1 shadow-sm transition"
                 >
-                  <ShoppingCart className="w-4 h-4" />
+                  <ShoppingCart className="w-3.5 h-3.5" />
                   <span>+ Cart</span>
                 </button>
               </div>

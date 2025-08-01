@@ -43,7 +43,8 @@ export default function Home() {
   const ProductCard = ({ p, badge }) => (
     <div
       onClick={() => setSelectedProduct(p)}
-      className="relative bg-white shadow-lg rounded-xl overflow-hidden p-3 flex flex-col border border-gray-100 transition-all duration-200 hover:shadow-2xl hover:-translate-y-1 group min-h-[320px] cursor-pointer"
+  className="relative bg-white shadow-md rounded-xl overflow-hidden p-2 flex flex-col border border-gray-100 transition-all duration-200 hover:shadow-xl hover:-translate-y-1 group min-h-[260px] cursor-pointer"
+
     >
       <span className={`absolute top-3 right-3 px-2 py-0.5 rounded-full text-xs font-semibold tracking-wide shadow
         ${badge === 'Flash Sale' ? 'bg-gradient-to-r from-red-500 to-pink-500 text-white' :
@@ -57,7 +58,8 @@ export default function Home() {
           className="w-24 h-24 object-contain transition-transform duration-200 group-hover:scale-105"
         />
       </div>
-      <h2 className="font-bold text-sm text-gray-800 mb-1 line-clamp-2">{p.title}</h2>
+      <h2 className="font-semibold text-xs text-gray-800 mb-1 line-clamp-2">
+{p.title}</h2>
       <div className="flex items-center gap-2 mb-1">
         <span className="text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded">{p.category}</span>
         <span className="flex items-center text-yellow-500 text-xs font-semibold">
@@ -70,16 +72,18 @@ export default function Home() {
           <span className="ml-1 text-gray-400">({p.rating.count})</span>
         </span>
       </div>
-      <p className="text-gray-500 text-xs mb-2 line-clamp-2">{p.description}</p>
+      <p className="text-gray-500 text-[11px] mb-1 line-clamp-2">
+{p.description}</p>
       <div className="flex items-center justify-between mt-auto gap-2">
-        <span className="text-pink-600 font-bold text-base">
+<span className="text-pink-600 font-semibold text-sm">
           Rp {(p.price * 16000).toLocaleString('id-ID')}
         </span>
         <a
           href={handleWaLink(p)}
           target="_blank"
           rel="noopener noreferrer"
-          className="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded-md font-semibold shadow-sm transition-colors duration-200 flex items-center gap-1 text-xs"
+  className="bg-green-500 hover:bg-green-600 text-white px-2 py-0.5 rounded-md font-medium shadow-sm transition-colors duration-200 flex items-center gap-1 text-[11px]"
+
           title="Pesan via WhatsApp"
         >
           <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -135,7 +139,7 @@ export default function Home() {
                 <h2 className="text-2xl mt-6 font-bold mb-4 text-blue-600">
                   {selectedCategory ? `Kategori: ${selectedCategory}` : 'Semua Produk'}
                 </h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+<div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                   {getMultipleOfFour(filteredProducts).map((p) => (
                     <ProductCard key={p.id} p={p} badge={selectedCategory ? selectedCategory : "Produk"} />
                   ))}
