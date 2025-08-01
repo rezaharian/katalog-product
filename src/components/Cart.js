@@ -56,13 +56,13 @@ export default function Cart() {
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() => updateQty(item.id, item.qty - 1)}
-                      className="px-2 py-1 bg-gray-200 rounded hover:bg-gray-300 font-bold text-sm"
+                      className="px-2 py-1 bg-pink-600 rounded hover:bg-gray-300 font-bold text-sm"
                       disabled={item.qty <= 1}
                     >-</button>
-                    <span className="w-8 text-center font-semibold text-sm">{item.qty}</span>
+                    <span className="w-8 text-center text-blue-700 font-semibold text-sm">{item.qty}</span>
                     <button
                       onClick={() => updateQty(item.id, item.qty + 1)}
-                      className="px-2 py-1 bg-gray-200 rounded hover:bg-gray-300 font-bold text-sm"
+                      className="px-2 py-1 bg-pink-600 rounded hover:bg-gray-300 font-bold text-sm"
                     >+</button>
                   </div>
                 </div>
@@ -84,7 +84,7 @@ export default function Cart() {
         </div>
 
         <div className="flex flex-col sm:flex-row justify-between items-center mb-8 gap-4">
-          <span className="font-bold text-lg">Total:</span>
+          <span className="font-bold text-stone-800 text-lg">Total:</span>
           <span className="font-bold text-2xl text-pink-600">Rp {total.toLocaleString('id-ID')}</span>
         </div>
 
