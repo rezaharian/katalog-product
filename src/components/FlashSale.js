@@ -7,11 +7,13 @@ import "swiper/css/navigation"
 import { Navigation } from "swiper/modules"
 import { ChevronRight, ShoppingCart, Star } from "lucide-react"
 import { useCart } from "@/context/CartContext"
+import DetailProduct from "./DetailProduct"
 
 export default function FlashSale() {
   const [products, setProducts] = useState([])
   const { addToCart } = useCart()
   const [notification, setNotification] = useState(null)
+  const [selectedProduct, setSelectedProduct] = useState(null)
 
   useEffect(() => {
     fetch("https://dummyjson.com/products?limit=20")
@@ -26,6 +28,12 @@ export default function FlashSale() {
       })
       .catch(err => console.error("Error fetching products:", err))
   }, [])
+
+  if (selectedProduct) {
+    return (
+      <DetailProduct product={selectedProduct} onBack={() => setSelectedProduct(null)} />
+    )
+  }
 
   return (
     <div className="w-full py-6 relative">
@@ -63,8 +71,10 @@ export default function FlashSale() {
 
           return (
             <SwiperSlide key={product.id}>
-              <div className="rounded-xl shadow-orange-400 hover:shadow-sm transition-all duration-200 flex flex-col items-center relative group w-full h-[220px] sm:h-[240px] md:h-[260px] max-w-[130px] sm:max-w-[150px] md:max-w-[160px] overflow-hidden bg-white">
-                
+              <div
+                onClick={() => setSelectedProduct(product)}
+                className="rounded-xl hover:shadow-sm transition-all duration-200 flex flex-col items-center relative group w-full h-[220px] sm:h-[240px] md:h-[260px] max-w-[130px] sm:max-w-[150px] md:max-w-[160px] overflow-hidden bg-white cursor-pointer"
+              >
                 <span className="absolute top-1 left-1 bg-red-500 text-white text-[8px] px-1.5 py-0.5 rounded-full font-semibold shadow">
                   {Math.round(product.discountPercentage)}% OFF
                 </span>
@@ -113,7 +123,8 @@ export default function FlashSale() {
                 </div>
 
                 <button
-                  onClick={() => {
+                  onClick={(e) => {
+                    e.stopPropagation()
                     addToCart(product)
                     setNotification(`✅ Produk "${product.title}" telah dimasukkan ke keranjang`)
                     setTimeout(() => setNotification(null), 3000)

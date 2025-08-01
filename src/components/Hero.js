@@ -81,7 +81,7 @@ export default function Hero() {
   }, []);
 
   return (
-    <div className="w-full relative rounded-xl shadow-lg overflow-hidden mb-10 bg-gradient-to-r mt-4 from-blue-400 via-pink-200 to-pink-400 aspect-[16/5] sm:aspect-[16/5] md:aspect-[16/6]">
+    <div className="w-full relative rounded-xl shadow-lg overflow-hidden mb-10 bg-gradient-to-r from-blue-400 via-pink-200 to-pink-400 aspect-[16/5] sm:aspect-[16/5] md:aspect-[16/6]">
       <img
         src="https://prismic-proxy.imgix.net/juvia-b2c-shop/Z-5_eHdAxsiBwRgo_XXL-themenshop-250410-sale-damen-modul-02b-de-en.jpg?auto=format,compress&rect=0,0,5760,1440&w=2600&h=650"
         alt="Banner Katalog Produk"

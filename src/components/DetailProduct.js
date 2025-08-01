@@ -26,11 +26,20 @@ export default function DetailProduct({ product, onBack }) {
 
       <div className="max-w-5xl mx-auto bg-white shadow-md rounded-xl p-6 flex flex-col md:flex-row gap-8">
         <div className="flex-shrink-0 flex justify-center items-center">
-          <img
-            src={product.image}
-            alt={product.title}
-            className="w-64 h-64 object-contain"
-          />
+                <img
+          src={
+            product.image
+              ? product.image
+              : product.thumbnail
+              ? product.thumbnail
+              : product.images && product.images[0]
+              ? product.images[0]
+              : "https://via.placeholder.com/300"
+          }
+          alt={product.title}
+          className="w-64 h-64 object-contain"
+        />
+
         </div>
 
         <div className="flex-1">
