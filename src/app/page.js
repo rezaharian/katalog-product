@@ -86,6 +86,7 @@ export default function Home() {
       ) : (
         <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full bg-gradient-to-br from-blue-50 via-white to-pink-50 min-h-screen ">
           <br />
+          <br />
           <Navbar />
           <Hero />
           <FlashSale onSelectProduct={(product) => setSelectedProduct(product)} />
